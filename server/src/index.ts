@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import routes from './routes'
 import { graphqlHTTP } from 'express-graphql';
 
-import {schema, rootResolver} from './graphql/schema'
+import schema from './graphql/schema'
 
 const app = express();
 
@@ -14,7 +14,6 @@ createConnection().then((connection) => {
     app.use('/api', routes);
     app.use('/graphql', graphqlHTTP({
         schema,
-        rootValue: rootResolver,
         graphiql: true
     }));
     app.listen(8080, () => console.log('listening on 8080'))

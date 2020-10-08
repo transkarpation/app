@@ -1,44 +1,30 @@
-import { buildSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
 
-export const schema = buildSchema(`
-  type RandomDie {
-    numSides: Int!
-    rollOnce: Int!
-    roll(numRolls: Int!): [Int]
-  }
-
-  type Query {
-    getDie(numSides: Int): RandomDie
-  }
-
-  type Mutation {
-    setMessage(message: String): String
-  }
-`);
-
-class RandomDie {
-    public numSides;
-
-    constructor(numSides: number) {
-        this.numSides = numSides;
+const userType = new GraphQLObjectType({
+    name: 'User',
+    fields: {
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
     }
+});
 
-    rollOnce() {
-        return 1 + Math.floor(Math.random() * this.numSides);
-    }
-
-    roll(args: any) {
-        const numRolls:number = args.numRolls
-        var output = [];
-        for (var i = 0; i < numRolls; i++) {
-            output.push(this.rollOnce());
+const queryType = new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      user: {
+        type: userType,
+        // `args` describes the arguments that the `user` query accepts
+        args: {
+          id: { type: GraphQLString }
+        },
+        resolve: (_: any, {id}: any) => {
+          return {
+              id: 'sdoifjs',
+              name: 'sldfjslfdjksldf'
+          };
         }
-        return output;
+      }
     }
-}
+  });
 
-export const rootResolver = {
-    getDie({numSides}: {numSides: number}) {
-        return new RandomDie(numSides || 6);
-    }
-}
+export default new GraphQLSchema({query: queryType});
