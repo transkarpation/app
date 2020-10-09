@@ -48,4 +48,24 @@ passport.use(
 
 )
 
+passport.use(
+	'jwt',
+	new JwtStrategy(
+		{
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			secretOrKey: jwtSecret,
+		},
+		async ({ id }: { id: string }, next): Promise<void> => {
+			try {
+				const userRepository = getCustomRepository(UserRepository);
+				const user = await userRepository.getById(id);
+
+				return next(null, user);
+			} catch (error) {
+				return next(null, null);
+			}
+		},
+	),
+);
+
 export default passport;

@@ -1,10 +1,11 @@
-http://localhost:3333/api/photos
+http://localhost:8080/api/photos
 
 ###
-POST http://localhost:3333/api/photos
+POST http://localhost:8080/api/photos
 content-type: application/json
 
 {
     "name": "sample",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "description": "sample photo",
+    "filename": "sample.jpg"
 }
