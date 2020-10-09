@@ -3,7 +3,7 @@ import { IsNotEmpty, isEmail, IsEmail } from 'class-validator';
 
 export class UserReq {
     @Expose()
-    id?: number;
+    id!: number;
 
     @Expose()
     @IsNotEmpty()
@@ -12,5 +12,5 @@ export class UserReq {
 
     @Expose()
     @IsNotEmpty()
-    passowrd: string;
+    password: string;
 }

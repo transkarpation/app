@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import express from 'express'
 import * as bodyParser from 'body-parser';
+import cors from 'cors';
 import routes from './routes'
 import { graphqlHTTP } from 'express-graphql';
 
@@ -11,6 +12,7 @@ const app = express();
 
 createConnection().then((connection) => {
     app.use(bodyParser.json())
+    app.use(cors())
     app.use('/api', routes);
     app.use('/graphql', graphqlHTTP({
         schema,

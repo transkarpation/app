@@ -9,12 +9,9 @@ export const validate = (classToFetch: any) => {
 
 			const errors = await cValidate(output);
 			if (errors.length > 0) {
-				const errorTexts = errors.map((item) => item.constraints).join(' ');
 
-				res.status(400).send(errorTexts)
+				res.status(400).send(errors)
 			}
-
-			req.output = output;
 		}
 
 

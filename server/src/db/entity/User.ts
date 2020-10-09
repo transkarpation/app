@@ -4,11 +4,11 @@ import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id?: number;
+    id!: number | undefined;
 
     @Column()
     email: string;
 
     @Column()
-    passord: string;
+    password: string;
 }
