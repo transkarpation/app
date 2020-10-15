@@ -1,6 +1,8 @@
-import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, OneToMany, Unique} from "typeorm";
+import {Photo} from './Photo'
 
 @Entity()
+@Unique(['email'])
 export class User {
 
     @PrimaryGeneratedColumn()
@@ -11,4 +13,7 @@ export class User {
 
     @Column()
     password: string;
+
+    @OneToMany(() => Photo, photo => photo.user)
+    photos: Promise<Photo[]>;
 }

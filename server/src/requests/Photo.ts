@@ -14,7 +14,6 @@ export class PhotoReq {
     description: string;
 
     @Expose()
-    @IsNotEmpty()
     filename: string;
 
     @Expose()

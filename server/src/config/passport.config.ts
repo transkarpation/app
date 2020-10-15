@@ -1,11 +1,13 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { Any, getCustomRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import { jwtSecret } from './jwt.config';
 import { UserRepository } from '../db/repositories/user.reposityry'
 import { Request } from 'express'
-import { User } from '../db/entity/User';
+import {ErrorResponse} from '../helpers/error.handler.helper'
+import HttpStatusCode from '../constants/httpStatusCode.constants'
+import {authErrorMessages} from '../constants/auth.constants'
 
 passport.use(
     'register',
@@ -14,14 +16,16 @@ passport.use(
 
         let user: any = await userRepository.getByEmail(email);
         if (user) {
-            return next(null, null);
+            return next(new ErrorResponse(HttpStatusCode.UNAUTHORIZED, authErrorMessages.TAKEN_EMAIL), null);
         }
 
         user = await userRepository.save(req.body)
 
         let {id, email: userEmail, password: userPassword} = user
 
-        return next(null, {id, email: userEmail, password: userPassword})
+        // return next(null, {id, email: userEmail, password: userPassword})
+        return next(null, user)
+
     })
 )
 
@@ -33,17 +37,19 @@ passport.use(
         let user = await userRepository.getByEmail(email);
 
         if(!user) {
-            return next(null, null)
+            return next(new ErrorResponse(HttpStatusCode.UNAUTHORIZED, authErrorMessages.INCORRECT_CREDENTIALS), null)
         }
 
         if (user.password !== password) {
-            return next(null, null)
+            return next(new ErrorResponse(HttpStatusCode.UNAUTHORIZED, authErrorMessages.INCORRECT_CREDENTIALS), null)
         }
 
         let {id, email: userEmail, password: userPassword} = user
 
 
-        return next(null, {id, email: userEmail, password: userPassword});
+        // return next(null, {id, email: userEmail, password: userPassword});
+        return next(null, user);
+
     })
 
 )

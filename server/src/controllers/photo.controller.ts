@@ -1,36 +1,36 @@
-import { getCustomRepository } from 'typeorm';
 // import { Photo } from '../db/entity/Photo';
-import { PhotoRepository } from '../db/repositories/photo.repository';
 import { Request, Response } from 'express'
 import { plainToClass, classToPlain } from 'class-transformer'
 import { PhotoReq } from '../requests/Photo'
 import { validate } from 'class-validator';
 import { Photo } from '../db/entity/Photo';
+import {User} from '../db/entity/User'
+import { getCustomRepository } from 'typeorm';
+import { UserRepository } from '../db/repositories/user.reposityry'
+import { PhotoRepository } from '../db/repositories/photo.repository'
 
 
 export default {
     async save(req: Request, res: Response) {
-        const output = plainToClass(PhotoReq, req.body, { excludeExtraneousValues: true });
-        const errors = await validate(output)
-        if (errors.length > 0) {
-            return res.status(400).send(errors);
-        }
-
-        const body = await classToPlain(output)
-
         const photoR = getCustomRepository(PhotoRepository)
-        const dbResult = await photoR.save(body)
+        let user = new User();
+        let reqUser = req.user as {id: number}
+        user.id = reqUser.id;
+        console.log(user)
+        const photo = await photoR.create({
+            user: user,
+            ...req.body
+        })
 
-        res.send(dbResult)
-        // res.send(output)
-        // const photoRepo = getCustomRepository(PhotoRepository);
-        // const result = await photoRepo.save({
-        //     name: 'photo 1',
-        //     description: 'awesom photo 1',
-        //     filename: 'photo1.jpg',
-        //     views: 1        })
-        // res.send(result)
+        res.send(photo)
+    },
 
+    async getAll(req: Request, res: Response) {
+        const userR = getCustomRepository(UserRepository);
+        let reqUser = req.user as {id: string};
+        const user = await userR.findOne(reqUser.id);
+        let photos = await user?.photos;
+        res.send(photos)
     },
 
     update(req: Request, res: Response) {

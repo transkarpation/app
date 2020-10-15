@@ -8,7 +8,7 @@ import routes from './routes'
 import { routesWhiteList } from './config/jwt.config';
 import { graphqlHTTP } from 'express-graphql';
 import { authenticateJwt } from './mw/jwt.mw'
-
+import errorHandlerMiddleware from './mw/error.handler.mw'
 import schema from './graphql/schema'
 
 const app = express();
@@ -22,5 +22,6 @@ createConnection().then((connection) => {
         schema,
         graphiql: true
     }));
+    app.use(errorHandlerMiddleware);
     app.listen(8080, () => console.log('listening on 8080'))
 }).catch(e => console.log(e));

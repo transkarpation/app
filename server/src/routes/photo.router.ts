@@ -4,9 +4,7 @@ import photoCtrl from '../controllers/photo.controller'
 
 const r = Router();
 
-r.get('/', (req, res) => {
-    res.send('get photos')
-})
+r.get('/', photoCtrl.getAll)
 
 r.get('/:id', () => { })
 
