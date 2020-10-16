@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany} from 'typeorm'
 import { PostDetails } from './PostDetails';
+import {Comment} from './Comment'
 
 @Entity()
 export class Post {
@@ -12,7 +13,10 @@ export class Post {
     @Column()
     text: string;
 
-    @OneToOne(type => PostDetails, (details) => details.post)
+    @OneToOne(type => PostDetails, (details) => details.post, {cascade: true})
     @JoinColumn()
-    details: PostDetails
+    details: PostDetails;
+
+    @OneToMany(type => Comment, (comment) => comment.post, {cascade: ['insert']})
+    comments: Promise<Comment[]>
 }

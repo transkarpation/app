@@ -9,6 +9,6 @@ export class PostDetails {
     @Column()
     metadata: string;
 
-    @OneToOne(type => Post, post => post.details, { cascade: true })
+    @OneToOne(type => Post, post => post.details)
     post: Post
 }
