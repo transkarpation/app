@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany} from 'typeorm'
-import { PostDetails } from './PostDetails';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne} from 'typeorm'
+import { Author } from './Author';
 import {Comment} from './Comment'
 
 @Entity()
@@ -7,16 +7,18 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    title: string;
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     @Column()
     text: string;
 
-    @OneToOne(type => PostDetails, (details) => details.post, {cascade: true})
-    @JoinColumn()
-    details: PostDetails;
-
-    @OneToMany(type => Comment, (comment) => comment.post, {cascade: ['insert']})
+    @OneToMany(type => Comment, (comment) => comment.post, {cascade: true})
     comments: Promise<Comment[]>
+
+    @ManyToOne(type => Author, author => author.posts, {cascade: true})
+    author: Promise<Author>
 }

@@ -1,28 +1,33 @@
 import "reflect-metadata";
-import {UserRepository} from '../db/repositories/user.reposityry';
-import {getCustomRepository, createConnection, getConnection} from 'typeorm'
-import { PhotoRepository } from '../db/repositories/photo.repository';
-import { User } from '../db/entity/User';
-import { PostDetails } from '../db/entity/PostDetails';
-import { Post } from '../db/entity/Post';
-import {Comment} from '../db/entity/Comment';
+import {createConnection, getConnection, getRepository} from 'typeorm'
+import { Post } from "../db/entity/Post";
+import {Comment} from  "../db/entity/Comment";
 
+import faker from 'faker'
+import { Author } from "../db/entity/Author";
+faker.locale = 'ru'
 
-async function createUser() {
-    const conn = await createConnection();
-
-    const post = await conn.getRepository(Post).findOne({where: {title: "super post"}})
-    if(post) {
-        const comment = new Comment();
-        comment.text = "Another Cool post";
-        comment.post = post;
-        const result = await conn.getRepository(Comment).save(comment)
-        console.log(result)
+async function createPostsForAuthor(count: number, author: Author):Promise<string> {
+    const conn = await getConnection();
+    for (const i of Array.from({length: count})) {
+        const post = new Post();
+        post.text = faker.lorem.paragraphs(2);
+        post.author = Promise.resolve(author);
+        await conn.getRepository(Post).save(post)
     }
-
-
-
-    // const result = await conn.getRepository(Post)
+    return 'ok';
 }
 
-createUser().then()
+
+async function index() {
+    const conn = await createConnection();
+
+    const author = new Author();
+    author.name = faker.name.firstName();
+    author.email = faker.internet.email();
+
+    const post = await conn.getRepository(Post).findOne(1);
+    console.log(post)
+}
+
+index().then()

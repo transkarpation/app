@@ -1,4 +1,5 @@
-import {PrimaryGeneratedColumn, Column, Entity, ManyToOne} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm'
+import { Author } from './Author';
 import { Post } from './Post';
 
 @Entity()
@@ -9,6 +10,9 @@ export class Comment {
     @Column()
     text: string;
 
-    @ManyToOne(type => Post, (post) => post.comments, {cascade: true})
-    post: Post;
+    @ManyToOne(type => Author, author => author.comments)
+    author: Promise<Author>
+
+    @ManyToOne(type => Post, (post) => post.comments)
+    post: Promise<Post>
 }
