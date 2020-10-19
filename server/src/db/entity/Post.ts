@@ -1,10 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne} from 'typeorm'
-import { Author } from './Author';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinTable} from 'typeorm'
+import { Category } from './Category';
 import {Comment} from './Comment'
+import { User } from './User';
+import {Expose} from 'class-transformer';
+import {IsNotEmpty} from 'class-validator';
 
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
+    @Expose()
     id: number;
 
     @CreateDateColumn()
@@ -14,11 +18,22 @@ export class Post {
     updatedAt: Date;
 
     @Column()
+    @Expose()
+    @IsNotEmpty()
+    title: string;
+
+    @Column()
+    @Expose()
+    @IsNotEmpty()
     text: string;
 
-    @OneToMany(type => Comment, (comment) => comment.post, {cascade: true})
+    @OneToMany(type => Comment, (comment) => comment.post, {cascade: ['insert']})
     comments: Promise<Comment[]>
 
-    @ManyToOne(type => Author, author => author.posts, {cascade: true})
-    author: Promise<Author>
+    @ManyToOne(type => User, user => user.posts, {cascade: ['insert']})
+    author: Promise<User>
+
+    @ManyToMany(type => Category, category => category.posts, {cascade: true})
+    @JoinTable()
+    categories: Promise<Category []>
 }

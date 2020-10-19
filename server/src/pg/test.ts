@@ -5,6 +5,7 @@ import {Comment} from  "../db/entity/Comment";
 
 import faker from 'faker'
 import { Author } from "../db/entity/Author";
+import { Category } from "../db/entity/Category";
 faker.locale = 'ru'
 
 async function createPostsForAuthor(count: number, author: Author):Promise<string> {
@@ -20,14 +21,17 @@ async function createPostsForAuthor(count: number, author: Author):Promise<strin
 
 
 async function index() {
-    const conn = await createConnection();
+    const conn = await createConnection()
+    const post = new Post()
+    post.text = "It is cool"
 
-    const author = new Author();
-    author.name = faker.name.firstName();
-    author.email = faker.internet.email();
+    const category = new Category();
+    category.name = "it"
 
-    const post = await conn.getRepository(Post).findOne(1);
-    console.log(post)
+    ;(await post.categories).push(category);
+
+
+    await conn.getRepository(Post).save(post);
 }
 
 index().then()

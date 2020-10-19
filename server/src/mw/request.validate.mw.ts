@@ -10,7 +10,7 @@ export const validate = (classToFetch: any) => {
 			const errors = await cValidate(output);
 			if (errors.length > 0) {
 
-				res.status(400).send(errors)
+				return res.status(400).send(errors)
 			}
 		}
 

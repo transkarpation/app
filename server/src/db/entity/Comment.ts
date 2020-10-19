@@ -10,9 +10,9 @@ export class Comment {
     @Column()
     text: string;
 
-    @ManyToOne(type => Author, author => author.comments)
+    @ManyToOne(type => Author, author => author.comments, {cascade: true})
     author: Promise<Author>
 
-    @ManyToOne(type => Post, (post) => post.comments)
+    @ManyToOne(type => Post, (post) => post.comments, {cascade: true})
     post: Promise<Post>
 }
